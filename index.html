@@ -1,154 +1,363 @@
 <!DOCTYPE html>
-<html lang="en-us">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Unity WebGL Player | PopSugar</title>
-    <link rel="shortcut icon" href="TemplateData/favicon.ico">
-    <link rel="stylesheet" href="TemplateData/style.css">
-  </head>
-  <body>
-    <div id="unity-container" class="unity-desktop">
-      <canvas id="unity-canvas" width=960 height=600></canvas>
-      <div id="unity-loading-bar">
-        <div id="unity-logo"></div>
-        <div id="unity-progress-bar-empty">
-          <div id="unity-progress-bar-full"></div>
-        </div>
-      </div>
-      <div id="unity-warning"> </div>
-      <div id="unity-footer">
-        <div id="unity-webgl-logo"></div>
-        <div id="unity-fullscreen-button"></div>
-        <div id="unity-build-title">PopSugar</div>
-      </div>
-    </div>
-	
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>three.js examples</title>
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link rel="shortcut icon" href="../files/favicon.ico" />
+		<link rel="stylesheet" type="text/css" href="../files/main.css">
+	</head>
+	<body>
+
+		<div id="panel">
+
+			<div id="header">
+				<h1><a href="https://threejs.org">three.js</a></h1>
+
+				<div id="sections">
+					<a href="../docs/index.html#manual/introduction/Creating-a-scene">docs</a>
+					<span class="selected">examples</span>
+				</div>
+
+				<div id="expandButton"></div>
+			</div>
+
+			<div id="panelScrim"></div>
+
+			<div id="contentWrapper">
+
+				<div id="inputWrapper">
+					<input placeholder="" type="text" id="filterInput" autocorrect="off" autocapitalize="off" spellcheck="false" />
+					<div id="exitSearchButton"></div>
+				</div>
+
+				<div id="content">
+					<img id="previewsToggler" src="./files/thumbnails.svg" width="20" height="20" />
+				</div>
+			</div>
+
+		</div>
+
+		<iframe id="viewer" name="viewer" allowfullscreen allowvr onmousewheel=""></iframe>
+
+		<a id="button" target="_blank"><img src="../files/ic_code_black_24dp.svg"></a>
+
+		<script src="files.js"></script>
+
 		<script>
-	setTimeout(function(){
-	$("#unity-container").find("button").click();
-	$("body").fadeIn();
-	},500);
-	</script>
-		
-    <script>
-      var container = document.querySelector("#unity-container");
-      var canvas = document.querySelector("#unity-canvas");
-      var loadingBar = document.querySelector("#unity-loading-bar");
-      var progressBarFull = document.querySelector("#unity-progress-bar-full");
-      var fullscreenButton = document.querySelector("#unity-fullscreen-button");
-      var warningBanner = document.querySelector("#unity-warning");
 
-      // Shows a temporary message banner/ribbon for a few seconds, or
-      // a permanent error message on top of the canvas if type=='error'.
-      // If type=='warning', a yellow highlight color is used.
-      // Modify or remove this function to customize the visually presented
-      // way that non-critical warnings and error messages are presented to the
-      // user.
-      function unityShowBanner(msg, type) {
-        function updateBannerVisibility() {
-          warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
-        }
-        var div = document.createElement('div');
-        div.innerHTML = msg;
-        warningBanner.appendChild(div);
-        if (type == 'error') div.style = 'background: red; padding: 10px;';
-        else {
-          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
-          setTimeout(function() {
-            warningBanner.removeChild(div);
-            updateBannerVisibility();
-          }, 5000);
-        }
-        updateBannerVisibility();
-      }
+		var panel = document.getElementById( 'panel' );
+		var content = document.getElementById( 'content' );
+		var viewer = document.getElementById( 'viewer' );
+		var filterInput = document.getElementById( 'filterInput' );
+		var exitSearchButton = document.getElementById( 'exitSearchButton' );
+		var expandButton = document.getElementById( 'expandButton' );
+		var viewSrcButton = document.getElementById( 'button' );
+		var panelScrim = document.getElementById( 'panelScrim' );
 
-      var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/Build.loader.js";
-      var config = {
-        dataUrl: buildUrl + "/Build.data.unityweb",
-        frameworkUrl: buildUrl + "/Build.framework.js.unityweb",
-        codeUrl: buildUrl + "/Build.wasm.unityweb",
-        streamingAssetsUrl: "StreamingAssets",
-        companyName: "DefaultCompany",
-        productName: "PopSugar",
-        productVersion: "1",
-        showBanner: unityShowBanner,
-      };
+		var previewsToggler = document.getElementById( 'previewsToggler' );
 
-      // By default Unity keeps WebGL canvas render target size matched with
-      // the DOM size of the canvas element (scaled by window.devicePixelRatio)
-      // Set this to false if you want to decouple this synchronization from
-      // happening inside the engine, and you would instead like to size up
-      // the canvas DOM size and WebGL render target sizes yourself.
-      // config.matchWebGLToCanvasSize = false;
+		var links = {};
+		var selected = null;
+		var container = document.createElement( 'div' );
 
-      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        // Mobile device style: fill the whole browser client area with the game canvas:
+		init();
 
-        var meta = document.createElement('meta');
-        meta.name = 'viewport';
-        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
-        document.getElementsByTagName('head')[0].appendChild(meta);
-        container.className = "unity-mobile";
+		function init() {
 
-        // To lower canvas resolution on mobile devices to gain some
-        // performance, uncomment the following line:
-        // config.devicePixelRatio = 1;
+			content.appendChild( container );
 
-        canvas.style.width = window.innerWidth + 'px';
-        canvas.style.height = window.innerHeight + 'px';
+			viewSrcButton.style.display = 'none';
 
-        unityShowBanner('WebGL builds are not supported on mobile devices.');
-      } else {
-        // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
+			for ( var key in files ) {
 
-        canvas.style.width = window.innerWidth + 'px';
-        canvas.style.height = window.innerHeight + 'px';
-      }
+				var section = files[ key ];
 
-      loadingBar.style.display = "block";
+				var header = document.createElement( 'h2' );
+				header.textContent = key;
+				header.setAttribute( 'data-category', key );
+				container.appendChild( header );
 
-      var script = document.createElement("script");
-      script.src = loaderUrl;
-      script.onload = () => {
-        createUnityInstance(canvas, config, (progress) => {
-          progressBarFull.style.width = 100 * progress + "%";
-        }).then((unityInstance) => {
-          loadingBar.style.display = "none";
-          fullscreenButton.onclick = () => {
-            unityInstance.SetFullscreen(1);
-          };
-        }).catch((message) => {
-          alert(message);
-        });
-      };
-      document.body.appendChild(script);
-    </script>
-	
-		<script>
-		var myWidth = innerWidth;
-		var myHeight = innerHeight;
-        var ratio0 = innerHeight/innerWidth;
-	    var ratio2 = (1-innerHeight/innerWidth);
-	    var ratio1 = ratio2/4;
-		var ratio2str  = ratio2.toString().concat ('%');
-	    var ratio1str = ratio1.toString().concat ('%');
-		document.getElementById("unity-container").style.width = myWidth + "px";
-		document.getElementById("unity-container").style.height = myHeight + "px";
-		
-		if (myHeight < myWidth)	
-		{		document.getElementById("unity-container").style.width = myWidth*ratio0/2 + "px";
-		        document.getElementById("unity-container").style.height =  myWidth*ratio0 + "px";	
-				
-				
-				 canvas.style.width =myWidth*ratio0/2 + "px";
-                 canvas.style.height = myWidth*ratio0 + "px";
-				 console.log(myWidth*ratio0/2+ "px");
-		  		//document.getElementById("unity-canvas").style.width = ratio1str;				
-				//document.getElementById("unity-canvas").style.height = ratio2str;
+				for ( var i = 0; i < section.length; i ++ ) {
+
+					var file = section[ i ];
+
+					var link = createLink( file );
+					container.appendChild( link );
+
+					links[ file ] = link;
+
+				}
+
+			}
+
+			if ( window.location.hash !== '' && links[ window.location.hash.substring( 1 ) ] ) {
+
+				loadFile( window.location.hash.substring( 1 ) );
+
+			}
+
+			filterInput.value = extractQuery();
+
+			if ( filterInput.value !== '' ) {
+
+				panel.classList.add( 'searchFocused' );
+
+			}
+
+			updateFilter();
+
+			// Events
+
+			filterInput.onfocus = function ( ) {
+
+				panel.classList.add( 'searchFocused' );
+
+			};
+
+			filterInput.onblur = function ( ) {
+
+				if ( filterInput.value === '' ) {
+
+					panel.classList.remove( 'searchFocused' );
+
+				}
+
+			};
+
+			exitSearchButton.onclick = function ( ) {
+
+				filterInput.value = '';
+				updateFilter();
+				panel.classList.remove( 'searchFocused' );
+
+			};
+
+			filterInput.addEventListener( 'input', function () {
+
+				updateFilter();
+
+			} );
+
+
+			expandButton.addEventListener( 'click', function ( event ) {
+
+				event.preventDefault();
+				panel.classList.toggle( 'open' );
+
+			} );
+
+			panelScrim.onclick = function ( event ) {
+
+				event.preventDefault();
+				panel.classList.toggle( 'open' );
+
+			};
+
+			previewsToggler.onclick = function ( event ) {
+
+				event.preventDefault();
+				content.classList.toggle( 'minimal' );
+
+			};
+
+			// iOS iframe auto-resize workaround
+
+			if ( /(iPad|iPhone|iPod)/g.test( navigator.userAgent ) ) {
+
+				viewer.style.width = getComputedStyle( viewer ).width;
+				viewer.style.height = getComputedStyle( viewer ).height;
+				viewer.setAttribute( 'scrolling', 'no' );
+
+			}
 
 		}
-	</script>
-  </body>
+
+		function createLink( file ) {
+
+
+			var template = [
+				'<div class="card">',
+				'	<a href="' + file + '.html" target="viewer">',
+				'		<div class="cover">',
+				'			<img src="screenshots/' + file + '.jpg" loading="lazy" width="400" />',
+				'		</div>',
+				'		<div class="title">' + getName( file ) + '</div>',
+				'	</a>',
+				'</div>'
+			].join( "\n" );
+
+			var link = createElementFromHTML( template );
+
+			link.querySelector( 'a[target="viewer"]' ).addEventListener( 'click', function ( event ) {
+
+				if ( event.button !== 0 || event.ctrlKey || event.altKey || event.metaKey ) return;
+
+				selectFile( file );
+
+			} );
+
+			return link;
+
+		}
+
+		function loadFile( file ) {
+
+			selectFile( file );
+			viewer.src = file + '.html';
+
+		}
+
+		function selectFile( file ) {
+
+			if ( selected !== null ) links[ selected ].classList.remove( 'selected' );
+
+			links[ file ].classList.add( 'selected' );
+
+			window.location.hash = file;
+			viewer.focus();
+
+			panel.classList.remove( 'open' );
+
+			selected = file;
+
+			// Reveal "View source" button and set attributes to this example
+			viewSrcButton.style.display = '';
+			viewSrcButton.href = 'https://github.com/mrdoob/three.js/blob/master/examples/' + selected + '.html';
+			viewSrcButton.title = 'View source code for ' + getName( selected ) + ' on GitHub';
+
+		}
+
+		function updateFilter() {
+
+			var v = filterInput.value.trim();
+
+			if ( v !== '' ) {
+
+				window.history.replaceState( {}, '', '?q=' + v + window.location.hash );
+
+			} else {
+
+				window.history.replaceState( {}, '', window.location.pathname + window.location.hash );
+
+			}
+
+			var exp = new RegExp( v, 'gi' );
+
+			for ( var key in files ) {
+
+				var section = files[ key ];
+
+				for ( var i = 0; i < section.length; i ++ ) {
+
+					filterExample( section[ i ], exp );
+
+				}
+
+			}
+
+			layoutList();
+
+		}
+
+		function filterExample( file, exp ) {
+
+			var link = links[ file ];
+			var name = getName( file );
+			if ( file in tags ) file += ' ' + tags[ file ].join( ' ' );
+			var res = file.match( exp );
+			var text;
+
+			if ( res && res.length > 0 ) {
+
+				link.classList.remove( 'hidden' );
+
+				for ( var i = 0; i < res.length; i ++ ) {
+
+					text = name.replace( res[ i ], '<b>' + res[ i ] + '</b>' );
+
+				}
+
+				link.querySelector( '.title' ).innerHTML = text;
+
+			} else {
+
+				link.classList.add( 'hidden' );
+				link.querySelector( '.title' ).innerHTML = name;
+
+			}
+
+		}
+
+		function getName( file ) {
+
+			var name = file.split( '_' );
+			name.shift();
+			return name.join( ' / ' );
+
+		}
+
+		function layoutList() {
+
+			for ( var key in files ) {
+
+				var collapsed = true;
+
+				var section = files[ key ];
+
+				for ( var i = 0; i < section.length; i ++ ) {
+
+					var file = section[ i ];
+
+					if ( links[ file ].classList.contains( 'hidden' ) === false ) {
+
+						collapsed = false;
+						break;
+
+					}
+
+				}
+
+				var element = document.querySelector( 'h2[data-category="' + key + '"]' );
+
+				if ( collapsed ) {
+
+					element.classList.add( 'hidden' );
+
+				} else {
+
+					element.classList.remove( 'hidden' );
+
+				}
+
+			}
+
+		}
+
+		function extractQuery() {
+
+			var p = window.location.search.indexOf( '?q=' );
+
+			if ( p !== - 1 ) {
+
+				return window.location.search.substr( 3 );
+
+			}
+
+			return '';
+
+		}
+
+
+		function createElementFromHTML( htmlString ) {
+
+			var div = document.createElement( 'div' );
+			div.innerHTML = htmlString.trim();
+			return div.firstChild;
+
+		}
+
+		</script>
+
+	</body>
 </html>
