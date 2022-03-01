@@ -4,11 +4,29 @@
   height: 100%;
 }
 
-@media screen and (orientation: landscape){
-    html {
-        -webkit-transform: translateY(-100%) rotate(90deg);    
-        transform: translateY(-100%) rotate(90deg);
-        -webkit-transform-origin: left bottom;    
-        transform-origin: left bottom;    
-    }
+
+.rightButton{
+  position: absolute;
+  right:    0;
+  bottom:   0;
+  width:169px;
+  height:169px;
+  background: url(./assets/Move_Button.png) no-repeat top center;
+  background-size: cover;
+  z-index: 13;
+  margin: 0;
+
+}
+
+.leftButton{
+  position: absolute;
+  left:    0;
+  bottom:   0;
+  width:169px;
+  height:169px;
+  background: url(./assets/Move_Button.png) no-repeat top center;
+  background-size: cover;
+  z-index: 13;
+  margin: 0;
+
 }
