@@ -1,6 +1,6 @@
 @media screen and (orientation:landscape) {
 body {
-  background-color: lightblue;
+  background-color: blue;
 }
   #container {
     -ms-transform: rotate(-90deg); /* IE 9 */
