@@ -30,3 +30,41 @@
   margin: 0;
 
 }
+
+.page{
+  
+  position: absolute;
+  font-size: medium;
+  font-family: sans-serif;
+  border: none;
+  
+}
+#startButton{
+  position: absolute;
+  width:169px;
+  height:71px;
+  background: url(./assets/Next_Button.png) no-repeat top center;
+  background-size: cover;
+  z-index: 12;
+  margin: 0;
+  bottom: 12%;
+  left: 50%;
+  -ms-transform: translate(-50%, -12%);
+  transform: translate(-50%, -12%);
+
+  text-decoration:none;
+
+}
+
+#IntroPage{
+  visibility: visible;
+  height: 100vw;
+  width: 100%;
+  background: url(./assets/Start Screen.png);
+  background-size: cover;
+
+  background-position: center;
+  /* Center and scale the image nicely */
+ z-index: 12;
+
+}

@@ -7,3 +7,12 @@
     }
 }
 
+	     <div  id="rightButton" class= "rightButton" ></div>
+         <div  id="leftButton" class= "leftButton" ></div>
+		 
+		 
+		 		<div  id="IntroPage" class="page" >
+		
+			<div  id="startButton"  > </div>
+		
+		</div>
