@@ -1,13 +1,14 @@
-@media screen and (orientation:landscape) {
-body {
-  background-color: lightblue;
+
+  
+  html, body {
+  height: 100%;
 }
-  #container {
-    -ms-transform: rotate(-90deg); /* IE 9 */
-    -webkit-transform: rotate(-90deg); /* Chrome, Safari, Opera */
-    transform: rotate(-90deg);
-    width: /* screen width */ ;
-    height: /* screen height */ ;
-    overflow: scroll;
-  }
+
+@media screen and (orientation: landscape){
+    html {
+        -webkit-transform: translateY(-100%) rotate(90deg);    
+        transform: translateY(-100%) rotate(90deg);
+        -webkit-transform-origin: left bottom;    
+        transform-origin: left bottom;    
+    }
 }

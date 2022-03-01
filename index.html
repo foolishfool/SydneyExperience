@@ -8,9 +8,9 @@
 	</head>
 	<body>
 
-		<div id="panel">
+		<div id="panel" class = "container" >
 
-			<div id="header">
+			<div id="header" >
 				<h1><a href="https://threejs.org">three1.js</a></h1>
 			</div>
 			</div
@@ -25,14 +25,17 @@
 
 		function init() {
 
-		window.addEventListener("load",function() {
-			setTimeout(function(){
-				// This hides the address bar:
-				window.scrollTo(0, 1);
-			}, 0);
-		});
+		lockOrientation = screen.lockOrientation || screen.mozLockOrientation || screen.msLockOrientation || screen.orientation.lock;
+		lockOrientation('landscape');
 
-		}
+		//window.addEventListener("load",function() {
+		//	setTimeout(function(){
+		//		// This hides the address bar:
+		//		window.scrollTo(0, 1);
+		//	}, 0);
+		//});
+		//
+		//}
 
 		</script>
 
