@@ -16,6 +16,7 @@ class Game{
 		this.stats;
 		this.controls;
 		this.camera;
+
 		this.scene;
 		this.renderer;
 		this.interactive = false;
@@ -40,6 +41,7 @@ class Game{
 		
 		this.container = document.createElement( 'div' );
 		this.container.style.height = '100%';
+
 		document.body.appendChild( this.container );
 		
 		const sfxExt = SFX.supportsAudioType('mp3') ? 'mp3' : 'ogg';
@@ -101,7 +103,7 @@ class Game{
        //     }
        // });
         
-        document.getElementById('play-btn').onclick = function(){ game.startGame(); };
+        document.getElementById('play-btn').onclick = function(){ game.startButtonClick(); };
         
 		const preloader = new Preloader(options);
 		
@@ -124,30 +126,35 @@ class Game{
         }
     }
     
-    startGame(){
-        this.sfx.click.play();
-        const parts = ["a Body", "an Aerial", "an Engine", "an Exhaust", "some Wheels"];
-        let index = 0;
-       //let configured = true;
-       //this.carGUI.forEach(function(item){
-       //   if (item==0){
-       //       showMessage(`Please select ${parts[index]}`);
-       //       configured = false;
-       //   }
-       //    index++;
-       //});
-       //    
-       //if (!configured){
-       //    this.sfx.skid.play();
-       //    return;
-       //}
-        
-        //Hide the GUI
-        const gui = ['play-btn'];
+	startButtonClick()
+	{
+			document.getElementById("play-btn-bg").src = "./assets/images/Start_Button_Down.png";
+		setTimeout(function(){
+		game.showPage1();
+		},1000);
+	}
+	
+	
+	showPage1()
+	{
+	  //Hide the GUI
+        const gui = ['play-btn' ,'logoTitle' ,'logo'];
+		 
         gui.forEach(function(id){
             document.getElementById(id).style.display = 'none';
         })
-        
+		
+		//const gui2 = ['play-btn' ,'logoTitle' ,'logo'];
+		//     gui2.forEach(function(id){
+        //    document.getElementById(id).style.display = 'block';
+        //})
+	}
+	
+    startGame(){
+		
+	
+        this.sfx.click.play();
+      
         document.getElementById('reset-btn').style.display = 'block';
         
         this.sfx.engine.play();
@@ -205,6 +212,11 @@ class Game{
 	}
 	
 	initSfx(){
+		
+	   if(window.innerHeight> window.innerWidth )
+			 document.getElementById("rotatesignbg").style.display = 'block';
+		else document.getElementById("rotatesignbg").style.display = 'none';
+		
 		this.sfx = {};
 		this.sfx.context = new (window.AudioContext || window.webkitAudioContext)();
 		this.sfx.bump = new SFX({
@@ -238,7 +250,6 @@ class Game{
 
 		this.camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 500 );
 		this.camera.position.set( 0, 6, -15 );
-
 		this.scene = new THREE.Scene();
 		this.scene.background = new THREE.Color( 0x000000 );
 		//this.scene.fog = new THREE.Fog( 0xa0a0a0, 20, 100 );
@@ -268,10 +279,13 @@ class Game{
 		
 		this.renderer = new THREE.WebGLRenderer( { antialias: true } );
 		this.renderer.setPixelRatio( window.devicePixelRatio );
-		this.renderer.setSize( window.innerWidth, window.innerHeight );
+		//this.renderer.setSize( window.innerWidth, window.innerHeight );
 		this.renderer.shadowMap.enabled = true;
 		this.container.appendChild( this.renderer.domElement );
-		
+		if(window.innerHeight> window.innerWidth )
+			this.renderer.setSize( window.innerHeight, window.innerHeight );
+		else this.renderer.setSize( window.innerWidth, window.innerHeight );
+	
 		if ('ontouchstart' in window){
 			//this.renderer.domElement.addEventListener('touchstart', function(evt){ game.tap(evt); });
 		}else{
@@ -328,9 +342,7 @@ class Game{
 					}else if (child.name.includes("Bonnet")){
 						const q0 = new CANNON.Quaternion();
 						child.rotation.set(-(Math.PI / 2),0,-(Math.PI / 2));
-						console.log(child.rotation.x);
-						console.log(child.rotation.y);
-						console.log(child.rotation.z);
+	
 						game.car.bonnet.push(child); 
 						//child.visible = false;
 						child.castShadow = true;
@@ -618,7 +630,7 @@ class Game{
 			this.vehicle.setBrake(brakeForce, 2);
 			this.vehicle.setBrake(brakeForce, 3);
 		}
-		console.log(steer);
+
 		this.vehicle.setSteeringValue(steer, 2);
 		this.vehicle.setSteeringValue(steer, 3);
 	}
@@ -629,17 +641,24 @@ class Game{
 
 		this.renderer.setSize( window.innerWidth, window.innerHeight );
 
+	//if(window.innerWidth<window.innerHeight)
+	//	this.renderer.setSize( window.innerHeight, window.innerWidth );
+	//else this.renderer.setSize( window.innerWidth, window.innerHeight );
+	//console.log(window.innerWidth);
+	//	console.log(window.innerHeight );
 	}
 
 	updateCamera(){
 		if (this.followCam===undefined) return;
 		const pos = this.car.chassis.position.clone();
-		pos.y += 0.3;
+		pos.y += 4.3;
 		if (this.controls!==undefined){
 			this.controls.target.copy(pos);
   			this.controls.update();
 		}else{
+			const pos1 = this.followCam.position.clone();
 			this.camera.position.lerp(this.followCam.getWorldPosition(new THREE.Vector3()), 0.05);
+	
 			this.camera.lookAt(pos);
 		}
 		
@@ -667,6 +686,9 @@ class Game{
 	animate() {
 		const game = this;
 		
+		if(window.innerHeight> window.innerWidth )
+			 document.getElementById("rotatesignbg").style.display = 'block';
+		else document.getElementById("rotatesignbg").style.display = 'none';
 		requestAnimationFrame( function(){ game.animate(); } );
 		
 		const now = Date.now();
@@ -825,7 +847,7 @@ class JoyStick{
 
 		if(options.onMove !=undefined)
 		{
-			circle.style.cssText = "position:absolute; bottom:35px; width:80px; height:80px; background:rgba(126, 126, 126, 0.5); border:#444 solid medium; border-radius:50%; left:80%; transform:translateX(-20%);";
+			circle.style.cssText = "position:absolute; bottom:35px; width:80px; height:80px;  background:rgba(126, 126, 126, 0.5); border:#444 solid medium; border-radius:50%; left:80%; transform:translateX(-20%);";
 		}
 		
 		const thumb = document.createElement("div");
@@ -890,9 +912,12 @@ class JoyStick{
 		}
 		// set the element's new position:
 		this.domElement.style.top = `${top + this.domElement.clientHeight/2}px`;
+			if (this.onTurn!=undefined)
 		this.domElement.style.left = `${left + this.domElement.clientWidth/2}px`;
 		
+	
 		const forward = -(top - this.origin.top + this.domElement.clientHeight/2)/this.maxRadius;
+
 		const turn = (left - this.origin.left + this.domElement.clientWidth/2)/this.maxRadius;
 		
 		if (this.onMove!=undefined) 

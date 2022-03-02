@@ -1,11 +1,14 @@
-@media screen and (orientation: landscape){
+@media screen and (orientation: portrait){
     html {
-        -webkit-transform: translateY(-100%) rotate(90deg);    
+        -webkit-transform: translateY(-220%) rotate(90deg);;    
         transform: translateY(-100%) rotate(90deg);
+		width: 100vh;
+		height: 100vw;
         -webkit-transform-origin: left bottom;    
         transform-origin: left bottom;    
     }
 }
+  
 
 	     <div  id="rightButton" class= "rightButton" ></div>
          <div  id="leftButton" class= "leftButton" ></div>

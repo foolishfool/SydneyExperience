@@ -1,42 +1,72 @@
-@media screen and (orientation: landscape){
-    html {
-        -webkit-transform: translateY(-100%) rotate(90deg);    
-        transform: translateY(-100%) rotate(90deg);
-        -webkit-transform-origin: left bottom;    
-        transform-origin: left bottom;    
-    }
+
+@media screen and (orientation: portrait){
+			#rotatesignbg{
+			display:block;
+			}
 }
   
+
+
   html, body {
-  height: 100%;
-}
-
-
-.rightButton{
-  position: absolute;
-  right:    0;
-  bottom:   0;
-  width:169px;
-  height:169px;
-  background: url(./assets/Move_Button.png) no-repeat top center;
-  background-size: cover;
-  z-index: 13;
-  margin: 0;
+  height:100%;
 
 }
 
-.leftButton{
-  position: absolute;
-  left:    0;
-  bottom:   0;
-  width:169px;
-  height:169px;
-  background: url(./assets/Move_Button.png) no-repeat top center;
-  background-size: cover;
-  z-index: 13;
-  margin: 0;
+    
+
+.autoLeftTop
+{
+    width: 10vw; 
+    height: 10*232/370vw; /* 100/56.25 = 1.778 */
+    max-height: 20*232/370vw;
+    max-width: 20vw; /* 16/9 = 1.778 */
+    margin: auto;
+    position: absolute;
+    left:35px;
+	top:35px;
+}
+
+
+
+.autoRightBottom
+{
+    width: 30vw; 
+    height: 30*234/770vw; /* 100/56.25 = 1.778 */
+    max-height: 40*234/770vw;
+    max-width: 40vw; /* 16/9 = 1.778 */
+    margin: auto;
+    position: absolute;
+    right:0px;
+	bottom:35px;	
 
 }
+
+
+.autoCenter
+{
+    width: 30vw; 
+    height: 30vw; 
+    max-height: 30vw;
+    max-width: 30vw;
+    margin: auto;
+    position: absolute;
+    top:0;bottom:0; /* vertical center */
+    left:0;right:0; /* horizontal center */
+    z-index: 9;
+}
+.autoCenter2
+{
+    width: 30vw; 
+    height: 30*407/770vw; 
+    max-height: 40*407/770vw;
+    max-width: 40vw;
+    margin: auto;
+    position: absolute;
+    top:20px; /* vertical center */
+    left:0;right:0; /* horizontal center */
+    z-index: 9;
+}
+
 
 .page{
   
