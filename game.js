@@ -288,9 +288,15 @@ class Game{
 			this.container.appendChild( this.stats.dom );
 		}
 		
-		this.joystick = new JoyStick({
+		this.joystick1 = new JoyStick({
 			game:this,
-			onMove:this.joystickCallback
+		    onTurn:this.joystickTurnCallback
+
+		})
+		
+		this.joystick2 = new JoyStick({
+			game:this,
+			onMove:this.joystickMoveCallback
 		})
 	}
 	
@@ -320,6 +326,11 @@ class Game{
 						child.castShadow = true;
 						receiveShadow = false;
 					}else if (child.name.includes("Bonnet")){
+						const q0 = new CANNON.Quaternion();
+						child.rotation.set(-(Math.PI / 2),0,-(Math.PI / 2));
+						console.log(child.rotation.x);
+						console.log(child.rotation.y);
+						console.log(child.rotation.z);
 						game.car.bonnet.push(child); 
 						//child.visible = false;
 						child.castShadow = true;
@@ -489,17 +500,17 @@ class Game{
 			indexForwardAxis: 2
 		});
 
-		const axlewidth = 0.8;
-		options.chassisConnectionPointLocal.set(axlewidth, 0, -1);
+		const axlewidth = 1;
+		options.chassisConnectionPointLocal.set(axlewidth, 0, -1); //back left
 		vehicle.addWheel(options);
 
-		options.chassisConnectionPointLocal.set(-axlewidth, 0, -1);
+		options.chassisConnectionPointLocal.set(-0.75, 0, -1);  //back right
 		vehicle.addWheel(options);
 
 		options.chassisConnectionPointLocal.set(axlewidth, 0, 1);
 		vehicle.addWheel(options);
 
-		options.chassisConnectionPointLocal.set(-axlewidth, 0, 1);
+		options.chassisConnectionPointLocal.set(-0.75, 0, 1); //right front
 		vehicle.addWheel(options);
 
 		vehicle.addToWorld(world);
@@ -573,8 +584,11 @@ class Game{
 		})
 	}
 	
-	joystickCallback( forward, turn ){
+	joystickMoveCallback( forward ){
 		this.js.forward = -forward;
+	}
+		
+	joystickTurnCallback( turn ){
 		this.js.turn = -turn;
 	}
 		
@@ -802,7 +816,18 @@ class SFX{
 class JoyStick{
 	constructor(options){
 		const circle = document.createElement("div");
-		circle.style.cssText = "position:absolute; bottom:35px; width:80px; height:80px; background:rgba(126, 126, 126, 0.5); border:#444 solid medium; border-radius:50%; left:50%; transform:translateX(-50%);";
+		if(options.onTurn !=undefined)
+		{
+		{console.log(11111)};
+	 	circle.style.cssText = "position:absolute; bottom:35px; width:80px; height:80px; background:rgba(126, 126, 126, 0.5); border:#444 solid medium; border-radius:50%; left:20%; transform:translateX(-80%);";
+		}
+
+		if(options.onMove !=undefined)
+		{
+			{console.log(2222)};
+			circle.style.cssText = "position:absolute; bottom:35px; width:80px; height:80px; background:rgba(126, 126, 126, 0.5); border:#444 solid medium; border-radius:50%; left:80%; transform:translateX(-20%);";
+		}
+		
 		const thumb = document.createElement("div");
 		thumb.style.cssText = "position: absolute; left: 20px; top: 20px; width: 40px; height: 40px; border-radius: 50%; background: #fff;";
 		circle.appendChild(thumb);
@@ -811,6 +836,7 @@ class JoyStick{
 		this.maxRadius = options.maxRadius || 40;
 		this.maxRadiusSquared = this.maxRadius * this.maxRadius;
 		this.onMove = options.onMove;
+		this.onTurn = options.onTurn;
 		this.game = options.game;
 		this.origin = { left:this.domElement.offsetLeft, top:this.domElement.offsetTop };
 		this.rotationDamping = options.rotationDamping || 0.06;
@@ -869,7 +895,9 @@ class JoyStick{
 		const forward = -(top - this.origin.top + this.domElement.clientHeight/2)/this.maxRadius;
 		const turn = (left - this.origin.left + this.domElement.clientWidth/2)/this.maxRadius;
 		
-		if (this.onMove!=undefined) this.onMove.call(this.game, forward, turn);
+		if (this.onMove!=undefined) this.onMove.call(this.game, forward);
+		if (this.onTurn!=undefined) this.onTurn.call(this.game, turn);
+
 	}
 	
 	up(evt){
@@ -882,8 +910,9 @@ class JoyStick{
 		}
 		this.domElement.style.top = `${this.origin.top}px`;
 		this.domElement.style.left = `${this.origin.left}px`;
-		
-		this.onMove.call(this.game, 0, 0);
+	 
+		if (this.onMove!=undefined)this.onMove.call(this.game, 0, 0);
+		if (this.onTurn!=undefined)this.onTurn.call(this.game, 0, 0);
 	}
 }
 
