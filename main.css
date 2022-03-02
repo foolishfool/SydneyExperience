@@ -1,4 +1,11 @@
-
+@media screen and (orientation: landscape){
+    html {
+        -webkit-transform: translateY(-100%) rotate(90deg);    
+        transform: translateY(-100%) rotate(90deg);
+        -webkit-transform-origin: left bottom;    
+        transform-origin: left bottom;    
+    }
+}
   
   html, body {
   height: 100%;

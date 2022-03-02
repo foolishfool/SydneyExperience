@@ -143,7 +143,7 @@ class Game{
        //}
         
         //Hide the GUI
-        const gui = ["part-select", 'car-parts', 'message', 'play-btn'];
+        const gui = ['play-btn'];
         gui.forEach(function(id){
             document.getElementById(id).style.display = 'none';
         })
@@ -154,10 +154,10 @@ class Game{
         this.init();
         this.animate();
         
-        function showMessage(msg){
-            const elm = document.getElementById("message");
-            elm.innerHTML = msg;
-        }
+       // function showMessage(msg){
+       //     const elm = document.getElementById("message");
+       //     elm.innerHTML = msg;
+       // }
     }
     
 	makeWireframe(mode=true, model=this.assets){
@@ -589,6 +589,7 @@ class Game{
 	}
 		
 	joystickTurnCallback( turn ){
+
 		this.js.turn = -turn;
 	}
 		
@@ -601,6 +602,7 @@ class Game{
 		 
 		const force = maxForce * forward;
 		const steer = maxSteerVal * turn;
+		 
 		 
 		if (forward!=0){
 			this.vehicle.setBrake(0, 0);
@@ -616,7 +618,7 @@ class Game{
 			this.vehicle.setBrake(brakeForce, 2);
 			this.vehicle.setBrake(brakeForce, 3);
 		}
-		
+		console.log(steer);
 		this.vehicle.setSteeringValue(steer, 2);
 		this.vehicle.setSteeringValue(steer, 3);
 	}
@@ -818,13 +820,11 @@ class JoyStick{
 		const circle = document.createElement("div");
 		if(options.onTurn !=undefined)
 		{
-		{console.log(11111)};
 	 	circle.style.cssText = "position:absolute; bottom:35px; width:80px; height:80px; background:rgba(126, 126, 126, 0.5); border:#444 solid medium; border-radius:50%; left:20%; transform:translateX(-80%);";
 		}
 
 		if(options.onMove !=undefined)
 		{
-			{console.log(2222)};
 			circle.style.cssText = "position:absolute; bottom:35px; width:80px; height:80px; background:rgba(126, 126, 126, 0.5); border:#444 solid medium; border-radius:50%; left:80%; transform:translateX(-20%);";
 		}
 		
@@ -895,9 +895,11 @@ class JoyStick{
 		const forward = -(top - this.origin.top + this.domElement.clientHeight/2)/this.maxRadius;
 		const turn = (left - this.origin.left + this.domElement.clientWidth/2)/this.maxRadius;
 		
-		if (this.onMove!=undefined) this.onMove.call(this.game, forward);
+		if (this.onMove!=undefined) 
+		{
+			this.onMove.call(this.game, forward);
+		}
 		if (this.onTurn!=undefined) this.onTurn.call(this.game, turn);
-
 	}
 	
 	up(evt){
