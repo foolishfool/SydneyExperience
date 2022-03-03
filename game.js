@@ -50,13 +50,6 @@ class Game{
 		const options = {
 			assets:[
                 "./assets/rc_time_trial1.fbx",
-				"./assets/images/logo.png",
-				"./assets/images/nx.jpg",
-				"./assets/images/px.jpg",
-				"./assets/images/ny.jpg",
-				"./assets/images/py.jpg",
-				"./assets/images/nz.jpg",
-				"./assets/images/pz.jpg",
                 `${this.assetsPath}sfx/bump.${sfxExt}`,
                 `${this.assetsPath}sfx/click.${sfxExt}`,
                 `${this.assetsPath}sfx/engine.${sfxExt}`,
@@ -68,16 +61,7 @@ class Game{
 			}
 		}
 		
-		for(let i=0; i<=16; i++){
-			let path;
-			if (i<10){
-				path = `${this.assetsPath}images/carparts000${i}.png`;
-			}else{
-				path = `${this.assetsPath}images/carparts00${i}.png`;
-			}
-			options.assets.push(path);
-		}
-		
+
 		this.mode = this.modes.PRELOAD;
 		this.motion = { forward:0, turn:0 };
 		this.clock = new THREE.Clock();
@@ -128,7 +112,7 @@ class Game{
     
 	startButtonClick()
 	{
-			document.getElementById("play-btn-bg").src = "./assets/images/Start_Button_Down.png";
+	    document.getElementById("play-btn-bg").src = "./assets/images/Start_Button_Down.png";
 		setTimeout(function(){
 		game.showPage1();
 		},1000);
@@ -137,13 +121,13 @@ class Game{
 	
 	showPage1()
 	{
-	  //Hide the GUI
-        const gui = ['play-btn' ,'logoTitle' ,'logo'];
+	  //Hide the GUI  'Startscreen_BG'
+        const gui = ['play-btn' ,'logoTitle' ,'logo' ,'Startscreen_BG'];
 		 
         gui.forEach(function(id){
             document.getElementById(id).style.display = 'none';
         })
-		
+		game.startGame();
 		//const gui2 = ['play-btn' ,'logoTitle' ,'logo'];
 		//     gui2.forEach(function(id){
         //    document.getElementById(id).style.display = 'block';
@@ -840,20 +824,32 @@ class SFX{
 class JoyStick{
 	constructor(options){
 		const circle = document.createElement("div");
+
+		//const joystickimage = document.createElement("image");
 		if(options.onTurn !=undefined)
 		{
-	 	circle.style.cssText = "position:absolute; bottom:35px; width:80px; height:80px; background:rgba(126, 126, 126, 0.5); border:#444 solid medium; border-radius:50%; left:20%; transform:translateX(-80%);";
+			circle.style.cssText = "  position:absolute; bottom:35px; width:80px; height:80px; background:rgba(126, 126, 126, 0.5); border:#444 solid medium; border-radius:50%; left:20%; transform:translateX(-80%);"
+			//joystickimage.style.cssText = " position: absolute; left: 20px; top: 20px; width: 40px; height: 40px; background: url(./assets/images/Joystick_Button_Up.png)  no-repeat fixed center;"
 		}
 
 		if(options.onMove !=undefined)
 		{
-			circle.style.cssText = "position:absolute; bottom:35px; width:80px; height:80px;  background:rgba(126, 126, 126, 0.5); border:#444 solid medium; border-radius:50%; left:80%; transform:translateX(-20%);";
+			circle.style.cssText = "position:absolute; bottom:35px; width:80px; height:80px; background:rgba(126, 126, 126, 0.5); border:#444 solid medium; border-radius:50%; left:80%; transform:translateX(-20%);"
+			//joystickimage.src = "./assets/images/JoystickButtonUp.png"
+			//joystickimage.style.border = "2px solid orange";
+			//joystickimage.style.borderRadius = "2px";
+			//joystickimage.style.zIndex = "100"; 
+			////joystickimage.style.cssText = "position: absolute; left: 0px; top: 0px; width:40px; height:40px; z-index:90;   "
+			//		circle.appendChild(joystickimage);
 		}
 		
 		const thumb = document.createElement("div");
-		thumb.style.cssText = "position: absolute; left: 20px; top: 20px; width: 40px; height: 40px; border-radius: 50%; background: #fff;";
+		//thumb.src = "./assets/images/image.png"
+		thumb.style.cssText = "position: absolute; left: 20px; top: 20px; width: 40px; height: 40px; border-radius: 50%; background: #fff; ";
+
 		circle.appendChild(thumb);
 		document.body.appendChild(circle);
+		//document.body.appendChild(joystickimage);
 		this.domElement = thumb;
 		this.maxRadius = options.maxRadius || 40;
 		this.maxRadiusSquared = this.maxRadius * this.maxRadius;
